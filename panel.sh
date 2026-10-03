@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # termux-style-older — Saf Alias Tabanlı Terminal Paneli
 
-OLDER_SRM_ACTIVE="true"
+OLDER_SRM_ACTIVE="false"
 OLDER_DVLE_ACTIVE="false"
 OLDER_STATE_FILE="$HOME/.older_hidden"
 if [ -f "$OLDER_STATE_FILE" ] && [ "$(cat "$OLDER_STATE_FILE" 2>/dev/null)" = "true" ]; then
