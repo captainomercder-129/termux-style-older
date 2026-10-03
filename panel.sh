@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # termux-style-older — Saf Alias Tabanlı Terminal Paneli
 
-OLDER_SRM_ACTIVE="false"
+OLDER_SRM_ACTIVE="true"
 OLDER_DVLE_ACTIVE="false"
 OLDER_STATE_FILE="$HOME/.older_hidden"
 if [ -f "$OLDER_STATE_FILE" ] && [ "$(cat "$OLDER_STATE_FILE" 2>/dev/null)" = "true" ]; then
@@ -365,12 +365,28 @@ developer_menu() {
 tkill_panel() {
     guard_hidden || return
     clear
+    echo -e "\033[0;35m==================================================\033[0m"
+    echo -e "\033[1;31m⚠️ Panel kaldırılacak (sadece kendi dosyaları, başka hiçbir şeye dokunulmaz).\033[0m"
+    echo -e "\033[1;33m👉 Onaylıyorsanız y yazın: \033[0m"
+    read -r tkill_confirm
+    if [ "$tkill_confirm" != "y" ]; then
+        echo -e "\033[1;33m❌ İptal edildi.\033[0m"
+        sleep 1
+        banner
+        return
+    fi
+
     echo -e "\033[1;31m🗑️ [*] Panel kaldırılıyor (sadece kendi dosyaları)...\033[0m"
     rm -f "$HOME/.panel.sh" "$HOME/.older_hidden"
     if [ -f "$HOME/.bashrc" ]; then
         sed -i '/source ~\/\.panel\.sh/d; /^banner$/d' "$HOME/.bashrc" 2>/dev/null
     fi
     echo -e "\033[1;32m✅ [+] Panel kaldırıldı. Diğer dosyalarınıza dokunulmadı.\033[0m"
+    echo -e "\033[0;35m==================================================\033[0m"
+    echo -e "\033[1;36m🔁 Geri kurmak için:\033[0m"
+    echo -e "\033[1;37m   cd ~ && cd termux-style-older\033[0m"
+    echo -e "\033[1;37m   bash install.sh\033[0m"
+    echo -e "\033[0;35m==================================================\033[0m"
     sleep 1
     exit
 }
@@ -401,8 +417,8 @@ update_panel() {
     echo -e "\033[0;35m==================================================\033[0m"
 
     local REPO_RAW="https://raw.githubusercontent.com/captainomercder-129/termux-style-older/main"
-    local TMP_PANEL="/tmp/.panel.sh.new"
-    local TMP_INSTALL="/tmp/.install.sh.new"
+    local TMP_PANEL="$HOME/.panel.sh.new"
+    local TMP_INSTALL="$HOME/.install.sh.new"
     local UPDATED="false"
 
     if curl -fsSL -o "$TMP_PANEL" "$REPO_RAW/panel.sh" 2>/dev/null; then
