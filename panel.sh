@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # termux-style-older — Saf Alias Tabanlı Terminal Paneli
 
-OLDER_SRM_ACTIVE="false"
+OLDER_SRM_ACTIVE="true"
 OLDER_DVLE_ACTIVE="false"
 OLDER_STATE_FILE="$HOME/.older_hidden"
 if [ -f "$OLDER_STATE_FILE" ] && [ "$(cat "$OLDER_STATE_FILE" 2>/dev/null)" = "true" ]; then
@@ -421,7 +421,9 @@ update_panel() {
     local TMP_INSTALL="$HOME/.install.sh.new"
     local UPDATED="false"
 
-    if curl -fsSL -o "$TMP_PANEL" "$REPO_RAW/panel.sh" 2>/dev/null; then
+    local CBUST
+    CBUST="$(date +%s)"
+    if curl -fsSL -o "$TMP_PANEL" "$REPO_RAW/panel.sh?nocache=$CBUST" 2>/dev/null; then
         if [ -f "$HOME/.panel.sh" ] && cmp -s "$TMP_PANEL" "$HOME/.panel.sh"; then
             echo -e "\033[1;33mℹ️ panel.sh zaten güncel.\033[0m"
         else
@@ -440,7 +442,7 @@ update_panel() {
         INSTALL_PATH="$HOME/termux-style-older/install.sh"
     fi
 
-    if curl -fsSL -o "$TMP_INSTALL" "$REPO_RAW/install.sh" 2>/dev/null; then
+    if curl -fsSL -o "$TMP_INSTALL" "$REPO_RAW/install.sh?nocache=$CBUST" 2>/dev/null; then
         if [ -n "$INSTALL_PATH" ]; then
             if cmp -s "$TMP_INSTALL" "$INSTALL_PATH"; then
                 echo -e "\033[1;33mℹ️ install.sh zaten güncel.\033[0m"
