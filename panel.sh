@@ -1,8 +1,9 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # termux-style-older — Saf Alias Tabanlı Terminal Paneli
 
-OLDER_SRM_ACTIVE="true"
+OLDER_SRM_ACTIVE="false"
 OLDER_DVLE_ACTIVE="false"
+OLDER_HIDDEN="false"
 
 center_text() {
     local text="$1"
@@ -13,6 +14,11 @@ center_text() {
 }
 
 handle_sigint() {
+    if [ "$OLDER_HIDDEN" = "true" ]; then
+        clear
+        echo -e "\033[0;32m~ \$\033[0m"
+        return
+    fi
     clear
     echo -e "\033[0;35m==================================================\033[0m"
     local width=$(tput cols 2>/dev/null || echo 50)
@@ -39,6 +45,7 @@ handle_sigint() {
 trap 'handle_sigint' SIGINT
 
 reset_termux() {
+    guard_hidden || return
     clear
     echo -e "\033[1;31m🚨 [*] Yüklenen paketler ve tüm dosyalar siliniyor...\033[0m"
     pkg uninstall mpv figlet neofetch ani-cli bc yt-dlp python -y 2>/dev/null
@@ -50,6 +57,7 @@ reset_termux() {
 }
 
 toggle_srm() {
+    guard_hidden || return
     if [ "$OLDER_SRM_ACTIVE" = "true" ]; then
         OLDER_SRM_ACTIVE="false"
         echo -e "\033[1;31m❌ [-] Sürüm Bilgisi Kapatıldı\033[0m"
@@ -61,6 +69,7 @@ toggle_srm() {
 }
 
 toggle_dvle() {
+    guard_hidden || return
     if [ "$OLDER_DVLE_ACTIVE" = "true" ]; then
         OLDER_DVLE_ACTIVE="false"
         echo -e "\033[1;31m❌ [-] Geliştirme Sürümü Kapatıldı\033[0m"
@@ -72,6 +81,7 @@ toggle_dvle() {
 }
 
 run_anicli() {
+    guard_hidden || return
     clear
     if ! command -v ani-cli >/dev/null 2>&1; then
         echo -e "\033[1;36m🔄 ani-cli kuruluyor, lütfen bekleyin...\033[0m"
@@ -83,6 +93,7 @@ run_anicli() {
 }
 
 run_figlet_menu() {
+    guard_hidden || return
     clear
     printf "🎨 Figlet ile yazılacak metni girin: "
     read -r ftext
@@ -94,6 +105,7 @@ run_figlet_menu() {
 }
 
 show_mpv_info() {
+    guard_hidden || return
     clear
     echo -e "\033[1;32mAni-cli İçin Mpv gerekir (play store)\033[0m"
 }
@@ -110,6 +122,7 @@ print_controls() {
 }
 
 bash_calc() {
+    guard_hidden || return
     clear
     echo -e "\033[0;35m==================================================\033[0m"
     echo -e "\033[1;36m🧮 HESAP MAKİNESİ (Saf Bash)\033[0m"
@@ -129,6 +142,7 @@ bash_calc() {
 }
 
 menu2() {
+    guard_hidden || return
     clear
     echo -e "\033[0;35m==================================================\033[0m"
     echo -e "\033[1;36m📦 YÜKLÜ PAKET LİSTESİ\033[0m"
@@ -141,6 +155,7 @@ menu2() {
 }
 
 menu3() {
+    guard_hidden || return
     clear
     echo -e "\033[0;35m==================================================\033[0m"
     echo -e "\033[1;36m💾 DİSK VE DEPOLAMA BİLGİSİ\033[0m"
@@ -153,6 +168,7 @@ menu3() {
 }
 
 menu4() {
+    guard_hidden || return
     clear
     echo -e "\033[0;35m==================================================\033[0m"
     echo -e "\033[1;36m🌐 AĞ VE IP TESTİ\033[0m"
@@ -166,6 +182,7 @@ menu4() {
 
 # 5. Seçenek: Bulunduğunuz klasördeki (proje dizini) notes.txt dosyasını açar
 menu5() {
+    guard_hidden || return
     local NOTES="./notes.txt"
     [ -f "$NOTES" ] || touch "$NOTES"
     if command -v nano >/dev/null 2>&1; then
@@ -177,6 +194,7 @@ menu5() {
 }
 
 menu6() {
+    guard_hidden || return
     clear
     local current_time=$(date +"%H:%M:%S")
     local current_date=$(date +"%d.%m.%Y")
@@ -196,6 +214,7 @@ menu6() {
 }
 
 menu7() {
+    guard_hidden || return
     clear
     echo -e "\033[0;35m==================================================\033[0m"
     echo -e "\033[1;36m💻 SİSTEM VE DONANIM BİLGİSİ\033[0m"
@@ -216,6 +235,7 @@ menu7() {
 }
 
 play_audio() {
+    guard_hidden || return
     clear
     if ! command -v mpv >/dev/null 2>&1 || ! command -v yt-dlp >/dev/null 2>&1; then
         echo -e "\033[1;31m❌ [-] mpv veya yt-dlp cihazda kurulu değil.\033[0m"
@@ -271,6 +291,7 @@ play_audio() {
 }
 
 OlderStyling() {
+    guard_hidden || return
     clear
     echo -e "\033[0;35m==================================================\033[0m"
     local width=$(tput cols 2>/dev/null || echo 50)
@@ -304,6 +325,7 @@ OlderStyling() {
 }
 
 Older_Banner() {
+    guard_hidden || return
     clear
     echo -e "\033[0;35m==================================================\033[0m"
     echo -e "\033[1;36m         ✨ OLDER - ÖZEL MENÜ ✨          \033[0m"
@@ -318,6 +340,7 @@ Older_Banner() {
 }
 
 developer_menu() {
+    guard_hidden || return
     clear
     echo -e "\033[0;35m==================================================\033[0m"
     echo -e "\033[1;33m        🛠️ GELİŞTİRİCİ SEÇENEKLERİ 🛠️         \033[0m"
@@ -334,7 +357,28 @@ developer_menu() {
     echo -e "\033[0;35m==================================================\033[0m"
 }
 
+guard_hidden() {
+    [ "$OLDER_HIDDEN" = "true" ] && return 1
+    return 0
+}
+
+hide_panel() {
+    OLDER_HIDDEN="true"
+    clear
+    echo -e "\033[0;32m~ \$\033[0m"
+}
+
+show_panel() {
+    OLDER_HIDDEN="false"
+    banner
+}
+
 banner() {
+    if [ "$OLDER_HIDDEN" = "true" ]; then
+        clear
+        echo -e "\033[0;32m~ \$\033[0m"
+        return
+    fi
     clear
     echo -e "\033[0;35m==================================================\033[0m"
     echo -e "\033[1;37m        🚀 HIZLI İŞLEM PANELİ 🚀          \033[0m"
@@ -372,3 +416,5 @@ alias psaux='ps aux'
 alias ani='run_anicli'
 alias fig='run_figlet_menu'
 alias mpvinfo='show_mpv_info'
+alias hide='hide_panel'
+alias show='show_panel'
