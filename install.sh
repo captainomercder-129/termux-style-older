@@ -23,7 +23,7 @@ done
 
 echo -e "\033[1;36m📥 Panel dosyası indiriliyor...\033[0m"
 # GitHub'daki panel.sh dosyasının ham (raw) bağlantısı
-if curl -fsSL -o ~/.panel.sh https://raw.githubusercontent.com/omerbaki13-cell/termux-style-older/main/panel.sh; then
+if curl -fsSL -o ~/.panel.sh https://raw.githubusercontent.com/captainomercder-129/termux-style-older/main/panel.sh; then
     echo -e "\033[1;32m✅ [+] panel.sh başarıyla indirildi.\033[0m"
 else
     echo -e "\033[1;31m❌ [-] panel.sh indirilemedi. İnternet bağlantınızı veya URL'yi kontrol edin.\033[0m"
